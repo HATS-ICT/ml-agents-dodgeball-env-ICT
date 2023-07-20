@@ -11,11 +11,11 @@ using Random = UnityEngine.Random;
 
 public class DodgeBallAgent : Agent
 {
-
+    protected static readonly bool IS_DEBUG = false;
     [Header("TEAM")]
 
     public int teamID;
-    private AgentCubeMovement m_CubeMovement;
+    protected AgentCubeMovement m_CubeMovement;
     public ThrowBall ThrowController;
 
     [Header("HEALTH")] public AgentHealth AgentHealth;
@@ -28,20 +28,25 @@ public class DodgeBallAgent : Agent
     [Header("INVENTORY")]
     public int currentNumberOfBalls;
     public List<DodgeBall> currentlyHeldBalls;
+    public bool infiniteAmmo = false;
 
     public bool UseVectorObs;
     public Transform HomeBaseLocation;
     public Transform TeamFlag;
-    private DodgeBallGameController m_GameController;
+    public DodgeBallGameController m_GameController;
 
-    private Vector3 m_StartingPos;
-    private Quaternion m_StartingRot;
+    protected Vector3 m_StartingPos;
+    protected Quaternion m_StartingRot;
     [HideInInspector]
     public Rigidbody AgentRb;
 
+    [Header("SCORES")]
+    public int hitScore = 0;
+    public int timesHit = 0;
+
     [Header("HIT EFFECTS")] public ParticleSystem HitByParticles;
-    private AudioSource m_BallImpactAudioSource;
-    private AudioSource m_StunnedAudioSource;
+    protected AudioSource m_BallImpactAudioSource;
+    protected AudioSource m_StunnedAudioSource;
     public Queue<DodgeBall> ActiveBallsQueue = new Queue<DodgeBall>();
     public List<Transform> BallUIList = new List<Transform>();
 
@@ -56,38 +61,37 @@ public class DodgeBallAgent : Agent
     [Header("ANIMATIONS")] public Animator FlagAnimator;
     public Animator VictoryDanceAnimation;
 
-    [HideInInspector]
+    //[HideInInspector]
     public int NumberOfTimesPlayerCanBeHit = 5;
-    [HideInInspector]
+    //[HideInInspector]
     public int HitPointsRemaining; //how many more times can we be hit
 
     [Header("OTHER")] public bool m_PlayerInitialized;
-    [HideInInspector]
     public BehaviorParameters m_BehaviorParameters;
 
     public float m_InputH;
-    private Vector3 m_HomeBasePosition;
-    private Vector3 m_HomeDirection;
-    private float m_InputV;
-    private float m_Rotate;
+    public Vector3 m_HomeBasePosition;
+    protected Vector3 m_HomeDirection;
+    protected float m_InputV;
+    protected float m_Rotate;
     public float m_ThrowInput;
     public float m_DashInput;
-    private bool m_FirstInitialize = true;
-    private bool m_DashCoolDownReady;
-    private bool m_IsStunned;
+    protected bool m_FirstInitialize = true;
+    protected bool m_DashCoolDownReady;
+    protected bool m_IsStunned;
     public float m_StunTime;
-    private float m_OpponentHasFlagPenalty;
-    private float m_TeamHasFlagBonus;
-    private float m_BallHoldBonus = 0.0f;
-    private float m_LocationNormalizationFactor = 80.0f; // About the size of a reasonable stage
-    private EnvironmentParameters m_EnvParameters;
+    protected float m_OpponentHasFlagPenalty;
+    protected float m_TeamHasFlagBonus;
+    protected float m_BallHoldBonus = 0.0f;
+    protected float m_LocationNormalizationFactor = 80.0f; // About the size of a reasonable stage
+    protected EnvironmentParameters m_EnvParameters;
 
     public BufferSensorComponent m_BallBuffer;
     public BufferSensorComponent m_OtherAgentsBuffer;
-    float[] ballOneHot = new float[5];
+    public float[] ballOneHot = new float[5];
 
     //is the current step a decision step for the agent
-    private bool m_IsDecisionStep;
+    protected bool m_IsDecisionStep;
 
     [HideInInspector]
     //because heuristic only runs every 5 fixed update steps, the input for a human feels really bad
@@ -97,7 +101,7 @@ public class DodgeBallAgent : Agent
 
     public override void Initialize()
     {
-
+        //Time.timeScale = 0.5f;
         //SETUP STUNNED AS
         m_StunnedAudioSource = gameObject.AddComponent<AudioSource>();
         m_StunnedAudioSource.spatialBlend = 1;
@@ -144,7 +148,7 @@ public class DodgeBallAgent : Agent
     }
 
     //Get all environment parameters for agent
-    private void GetAllParameters()
+    protected virtual void GetAllParameters()
     {
         m_StunTime = m_EnvParameters.GetWithDefault("stun_time", 10.0f);
         m_OpponentHasFlagPenalty = m_EnvParameters.GetWithDefault("opponent_has_flag_penalty", 0f);
@@ -152,7 +156,7 @@ public class DodgeBallAgent : Agent
         m_BallHoldBonus = m_EnvParameters.GetWithDefault("ball_hold_bonus", 0f);
     }
 
-    public void ResetAgent()
+    public virtual void ResetAgent()
     {
         GetAllParameters();
         StopAllCoroutines();
@@ -167,10 +171,18 @@ public class DodgeBallAgent : Agent
             transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
         }
         ActiveBallsQueue.Clear();
-        currentNumberOfBalls = 0;
+        if (infiniteAmmo)
+        {
+            currentNumberOfBalls = 1;
+        }
+        else
+        {
+            currentNumberOfBalls = 0;
+        }
+        
         AgentRb.velocity = Vector3.zero;
         AgentRb.angularVelocity = Vector3.zero;
-        SetActiveBalls(0);
+        SetActiveBalls(currentNumberOfBalls);
         NormalEyes.gameObject.SetActive(true);
         HitEyes.gameObject.SetActive(false);
         HasEnemyFlag = false;
@@ -211,7 +223,7 @@ public class DodgeBallAgent : Agent
     }
 
     //Set the number of active balls.
-    void SetActiveBalls(int numOfBalls)
+    protected void SetActiveBalls(int numOfBalls)
     {
         int i = 0;
         foreach (var item in BallUIList)
@@ -222,8 +234,8 @@ public class DodgeBallAgent : Agent
         }
     }
 
-    private int m_AgentStepCount; //current agent step
-    void FixedUpdate()
+    protected int m_AgentStepCount; //current agent step
+    protected virtual void FixedUpdate()
     {
         m_DashCoolDownReady = m_CubeMovement.dashCoolDownTimer > m_CubeMovement.dashCoolDownDuration;
         if (StepCount % 5 == 0)
@@ -260,6 +272,7 @@ public class DodgeBallAgent : Agent
 
             sensor.AddObservation(HasEnemyFlag);
         }
+        if (IS_DEBUG) Debug.Log("A) CollectObservations=" + sensor.ObservationSize() + "; spec=" + sensor.GetObservationSpec().Shape + "; HP Obs=" + ((float)HitPointsRemaining / (float)NumberOfTimesPlayerCanBeHit) + "; ball One Hot=" + string.Join(",", ballOneHot) + "; relative coords=" + string.Join(",", GetRelativeCoordinates(m_HomeBasePosition)));
 
         List<DodgeBallGameController.PlayerInfo> teamList;
         List<DodgeBallGameController.PlayerInfo> opponentsList;
@@ -316,10 +329,13 @@ public class DodgeBallAgent : Agent
 
         //Location to flag
         sensor.AddObservation(GetRelativeCoordinates(currentFlagPosition));
+        if (IS_DEBUG) Debug.Log(StepCount + " B) CollectObservations=" + sensor.ObservationSize() + "; spec=" + sensor.GetObservationSpec().Shape + "; obs=" + string.Join(",", GetObservations()) + "; all obs=" + string.Join(",", GetObservations()));
+        if (IS_DEBUG) Debug.Log(gameObject.name + "\tObs=\t" + string.Join(",", GetObservations()));
+        
     }
 
     //Get normalized position relative to agent's current position.
-    private float[] GetRelativeCoordinates(Vector3 pos)
+    protected float[] GetRelativeCoordinates(Vector3 pos)
     {
         Vector3 relativeHome = transform.InverseTransformPoint(pos);
         var relativeCoordinate = new float[2];
@@ -329,7 +345,7 @@ public class DodgeBallAgent : Agent
     }
 
     //Get information of teammate
-    private float[] GetOtherAgentData(DodgeBallGameController.PlayerInfo info)
+    protected virtual float[] GetOtherAgentData(DodgeBallGameController.PlayerInfo info)
     {
         var otherAgentdata = new float[8];
         otherAgentdata[0] = (float)info.Agent.HitPointsRemaining / (float)NumberOfTimesPlayerCanBeHit;
@@ -343,11 +359,10 @@ public class DodgeBallAgent : Agent
         otherAgentdata[6] = relativeVelocity.x / 30.0f;
         otherAgentdata[7] = relativeVelocity.z / 30.0f;
         return otherAgentdata;
-
     }
 
     //Excute agent movement
-    public void MoveAgent(ActionBuffers actionBuffers)
+    public virtual void MoveAgent(ActionBuffers actionBuffers)
     {
         if (Stunned)
         {
@@ -386,19 +401,22 @@ public class DodgeBallAgent : Agent
         }
     }
 
-    public void ThrowTheBall()
+    public virtual void ThrowTheBall()
     {
         if (currentNumberOfBalls > 0 && !ThrowController.coolDownWait)
         {
+            if (IS_DEBUG) Debug.Log("Attempting to throw");
             var db = ActiveBallsQueue.Peek();
+            if (IS_DEBUG) Debug.Log("Almost throw"+db);
             ThrowController.Throw(db, this, m_BehaviorParameters.TeamId);
+            if (IS_DEBUG) Debug.Log("After throw");
             ActiveBallsQueue.Dequeue();
             currentNumberOfBalls--;
             SetActiveBalls(currentNumberOfBalls);
         }
     }
 
-    public void DropAllBalls()
+    public virtual void DropAllBalls()
     {
         while (currentNumberOfBalls > 0)
         {
@@ -408,10 +426,16 @@ public class DodgeBallAgent : Agent
             currentNumberOfBalls--;
             SetActiveBalls(currentNumberOfBalls);
         }
+        if (infiniteAmmo)
+        {
+            currentNumberOfBalls = 1;
+            SetActiveBalls(currentNumberOfBalls);
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        if (IS_DEBUG) Debug.Log("OnActionReceived: " + string.Join(",", actionBuffers.DiscreteActions) + " for " + gameObject.name);
         MoveAgent(actionBuffers);
     }
 
@@ -434,7 +458,7 @@ public class DodgeBallAgent : Agent
         }
     }
 
-    public void PlayHitFX()
+    public virtual void PlayHitFX()
     {
         // Only shake if player object
         if (ThrowController.UseScreenShake && m_GameController.PlayerGameObject == gameObject)
@@ -449,22 +473,22 @@ public class DodgeBallAgent : Agent
         }
     }
 
-    public void PlayBallThwackSound()
+    public virtual void PlayBallThwackSound()
     {
         if (m_GameController.ShouldPlayEffects)
         {
             m_BallImpactAudioSource.pitch = Random.Range(2f, 3f);
-            m_BallImpactAudioSource.PlayOneShot(m_GameController.BallImpactClip2, 1f);
-            m_BallImpactAudioSource.PlayOneShot(m_GameController.BallImpactClip1, 1f);
+            if (m_GameController.BallImpactClip2 != null) m_BallImpactAudioSource.PlayOneShot(m_GameController.BallImpactClip2, 1f);
+            if (m_GameController.BallImpactClip1 != null) m_BallImpactAudioSource.PlayOneShot(m_GameController.BallImpactClip1, 1f);
         }
     }
     
-    public void PlayStunnedVoice()
+    public virtual void PlayStunnedVoice()
     {
         if (m_GameController.ShouldPlayEffects)
         {
             m_StunnedAudioSource.pitch = Random.Range(.3f, .8f);
-            m_StunnedAudioSource.PlayOneShot(m_GameController.HurtVoiceAudioClip, 1f);
+            if (m_GameController.HurtVoiceAudioClip != null) m_StunnedAudioSource.PlayOneShot(m_GameController.HurtVoiceAudioClip, 1f);
         }
     }
 
@@ -542,7 +566,7 @@ public class DodgeBallAgent : Agent
         }
     }
 
-    private void OnCollisionEnter(Collision col)
+    protected virtual void OnCollisionEnter(Collision col)
     {
         // Ignore all collisions when stunned
         if (Stunned)
@@ -568,7 +592,7 @@ public class DodgeBallAgent : Agent
                 {
                     if (hitAgent.teamID != teamID && !hitAgent.Stunned)
                     {
-                        if (m_GameController.ShouldPlayEffects)
+                        if (m_GameController.ShouldPlayEffects && m_GameController.FlagHitClip != null)
                         {
                             m_BallImpactAudioSource.PlayOneShot(m_GameController.FlagHitClip, 1f);
                         }
@@ -592,21 +616,26 @@ public class DodgeBallAgent : Agent
             {
                 PlayHitFX();
                 m_GameController.PlayerWasHit(this, db.thrownBy);
+                // give point to hitter
+                this.timesHit += 1;
+                db.thrownBy.hitScore += 1;
                 db.BallIsInPlay(false);
             }
         }
         else //TRY TO PICK IT UP
         {
-            if (currentNumberOfBalls < 4)
+            if (!infiniteAmmo && currentNumberOfBalls < 4)
             {
+                if (IS_DEBUG) Debug.Log("Attempting Pick Up"); 
                 PickUpBall(db);
+                if (IS_DEBUG) Debug.Log("Successful Pick Up");
             }
         }
     }
 
-    void PickUpBall(DodgeBall db)
+    protected virtual void PickUpBall(DodgeBall db)
     {
-        if (m_GameController.ShouldPlayEffects)
+        if (m_GameController.ShouldPlayEffects && (m_GameController.BallPickupClip != null))
         {
             m_BallImpactAudioSource.PlayOneShot(m_GameController.BallPickupClip, .1f);
         }
@@ -635,4 +664,15 @@ public class DodgeBallAgent : Agent
         discreteActionsOut[0] = input.CheckIfInputSinceLastFrame(ref input.m_throwPressed) ? 1 : 0; //dash
         discreteActionsOut[1] = input.CheckIfInputSinceLastFrame(ref input.m_dashPressed) ? 1 : 0; //dash
     }
+
+    public virtual WaypointView getCurrentWaypoint()
+    {
+        return null;
+    }
+
+    public virtual WaypointView getTargetWaypoint()
+    {
+        return null;
+    }
+
 }
