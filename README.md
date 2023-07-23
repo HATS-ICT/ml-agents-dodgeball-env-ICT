@@ -74,23 +74,36 @@ To produce the results in the blog post, we used the default environment as it i
 # Extending DodgeBall to Emulate Military Training Scenarios 
 
 ## Infinite Ammunition 
-
+The first change that was needed to convert the original dodgeball scenario into a more military-esque scenario was infinite ammunition. We implemented a system that destroys projectiles on impact and returns them into the possession of the agent. This removes the need to go and recover balls, which does distracts from tactical movement and adds an unnecessary layer of complexity for the agents to learn. 
+Gif
 ## 3D Terrains 
-
+The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. 
+Picture
+This new setup requires additional raycasts, so that the agents can detect opponents or walls that are not at the same altitude as them. This is crucial for developing intelligent policies when uneven terrain is introduced. 
+Picture Before
+Picture After
 ## Modified Observation and Action Spaces 
-
+Some modifications were made to the agents observation and action spaces were made to better fit our needs. The observation spaces are smaller due to the removal of unnecessary observations that only apply to the Capture the Flag gamemode. Additionally, the dash action was removed as it was a bit awkward in our scenario, especially when utilizing our waypoint based movement system. 
 ## Shooting Vertically 
-
+Another obvious additon to our scenario was the ability to shoot vertically. Opponents should be able to fire at angles other than parallel to the ground so that they can target opponents at various different altitudes. 
+Gif 
 ## Aim-assist 
-Promotes strategic movement over fine motor skills 
+We attempted to train some models which were able to choose the angle of their shots, but this drastically increases the complexity of the environment. Our solution was to implement aim-assist, which targets the opponent closest to straight ahead and then automatically fires directly at it. This removes the need for fine tuning aim and encourages learning intelligent positioning and movement over high-precision skills. This method achieved far better results, so it was used in most of our simulations and all the experiments in this repository. 
+Gif 
 
 ## Introducing Roles 
-
-## Waypoint Generation 
+We also investigated the ability to introduce different roles within the same team. We hoped to see whether the agents could learn a more complicated strategy to cooperate and utilize each individuals strengths. This was studied using short and long range units with different capabilities. The short-range units have half the aim-assist range but twice the fire-rate. We found that the agents did in fact learn their role. Short-range units learned more aggressive policies and the long-range units tended to remain in rear. 
+Gif 
 
 ## Waypoint Movement 
+Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core movement-oriented strategy. This system limits agents to walking along the waypoints we generate onto the terrain. This allows us to automate shooting and only utilize reinforcement learning for the agents' movement. This allows us to only request a decision from the learned policy at each waypoint which is translated to the direction to travel to the next waypoint. This increases the time between decisions by over 700%. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain. 
 
 ## Tests 
+We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. 
+Arena Pics 
+
+Additionally, we tested the two systems directly against each other by converting the waypoint-based decisions back into continuous movement with eight possible directions. 
+Movement gif
 
 ## Results 
 
