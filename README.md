@@ -1,6 +1,4 @@
-![Header](/doc_images/Dodgeball_TitleScreen.png)
-
-# ML-Agents DodgeBall
+# ML-Agents DodgeBall Extended Battle Scenario
 
 ## Overview
 
@@ -70,18 +68,29 @@ To produce the results in the blog post, we used the default environment as it i
 | `ctf_hit_reward`| (default = `0.02`) In Capture the Flag, a reward given to an agent when it hits an opponent with a ball.|
 
 
-## Extending DodgeBall
+# Extending DodgeBall to Emulate Military Training Scenarios 
 
-We'd love to hear how you're using DodgeBall - if you've customized the environment in an interesting way definitely let us know by emailing mlagents@unity3d.com.
+## Infinite Ammunition 
 
-## Reporting Issues
+## 3D Terrains 
 
-This environment is intended to provide an example of using ML-Agents in a cooperative/competitive game-like scenario, and it is not intended to be a finished game. While we will do our best to keep it updated, support of later versions of ML-Agents or additional content is not guaranteed.
+## Modified Observation and Action Spaces 
 
-If you do run into any issues or bugs with DodgeBall, please file an [Issue](https://github.com/Unity-Technologies/ml-agents-dodgeball-env/issues) on Github.
+## Shooting Vertically 
 
-## License
+## Aim-assist 
+Promotes strategic movement over fine motor skills 
 
-[Apache 2.0 License](LICENSE.txt)
+## Introducing Roles 
+
+## Waypoint Generation 
+
+## Waypoint Movement 
+
+## Tests 
+
+## Results 
+
+
 
 
