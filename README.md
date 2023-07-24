@@ -100,17 +100,20 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/e9222
 
 
 ## Waypoint Movement 
-Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core positional strategy. This system limits agents to walking along the waypoints we generate onto the terrain. This allows us to automate shooting and only utilize reinforcement learning for the agents' movement. This allows us to only request a decision from the learned policy at each waypoint which is translated to the direction to travel to the next waypoint. This increases the time between decisions by over 700%. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain. 
+Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core positional strategy. This system limits agents to walking along the waypoints we generate onto the terrain. This allows us to automate shooting and only utilize reinforcement learning for the agents' movement. This allows us to only request a decision from the learned policy at each waypoint which is translated to the direction to travel to the next waypoint. This increases the time between decisions by over 700%. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain.
+Demo Video of agents on waypoints 
 
 ## Tests 
 We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. 
 Arena Pics 
+Result Videos 
 
 Additionally, we tested the two systems directly against each other by converting the waypoint-based decisions back into continuous movement with eight possible directions. 
 Movement gif
+Result Videos 
 
 ## Results 
-
+Data 
 
 
 
