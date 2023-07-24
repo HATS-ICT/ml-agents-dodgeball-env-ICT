@@ -20,16 +20,16 @@ Open the root folder in Unity. Then, navigate to `Assets/Dodgeball/Scenes/TitleS
 ## Scenes
 
 In `Assets/Dodgeball/Scenes/`, in addition to the title screen, eight scenes are provided. They are:
-* `Large_Obs.unity`
-* `Large_Obs_Dense.unity`
-* `XL_Obs.unity`
-* `XL_Obs_Dense.unity`
+* `Large_F_Obs.unity`
+* `Large_F_Obs_Dense.unity`
+* `XL_F_Obs.unity`
+* `XL_F_Obs_Dense.unity`
 * `Large_WPM_Obs.unity`
 * `Large_WPM_Obs_Dense.unity`
 * `XL_WPM_Obs.unity`
 * `XL_WPM_Obs_Dense.unity`
 
-Where Obs differentiates between the scenarios which include the modified observation space and those that do not. WPM stands for waypoint manual, which was the final iteration of our waypoint movement system and will be discussed in the Waypoint Movement section of this document.  Large and XL refers to the two different sizes of arena in which we tested our waypoint movement system against the original continuous implementation. 
+Where Obs differentiates between the scenarios which include the modified observation space and those that do not. WPM stands for waypoint manual, which was the final iteration of our waypoint movement system and will be discussed in the Waypoint Movement section of this document.  Large and XL refers to the two different sizes of arena in which we tested our waypoint movement system against the original continuous implementation. F simply indicates that the scene is the final build of our project. 
 
 ### Elimination
 
