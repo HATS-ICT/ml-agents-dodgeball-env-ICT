@@ -81,8 +81,7 @@ The first change that was needed to convert the original dodgeball scenario into
 The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. 
 Picture
 This new setup requires additional raycasts, so that the agents can detect opponents or walls that are not at the same altitude as them. This is crucial for developing intelligent policies when uneven terrain is introduced. 
-Picture Before
-Picture After
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Screenshot%20(27).png)
 ## Modified Observation and Action Spaces 
 Some modifications were made to the agents observation and action spaces were made to better fit our needs. The observation spaces are smaller due to the removal of unnecessary observations that only apply to the Capture the Flag gamemode. Additionally, the dash action was removed as it was a bit awkward in our scenario, especially when utilizing our waypoint based movement system. 
 ## Shooting Vertically 
