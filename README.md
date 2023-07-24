@@ -76,6 +76,7 @@ To produce the results in the blog post, we used the default environment as it i
 ## Infinite Ammunition 
 The first change that was needed to convert the original dodgeball scenario into a more military-esque scenario was infinite ammunition. We implemented a system that destroys projectiles on impact and returns them into the possession of the agent. This removes the need to go and recover balls, which does distracts from tactical movement and adds an unnecessary layer of complexity for the agents to learn. 
 Gif
+
 ## 3D Terrains 
 The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. 
 Picture
