@@ -36,11 +36,8 @@ Where Obs differentiates between the scenarios which include the modified observ
 In the elimination scenes, four players face off against another team of four. Balls are dropped throughout the stage, and players must pick up balls and throw them at opponents. If a player is hit twice by an opponent, they are "out", and sent to the penalty podium in the top-center of the stage.
 
 ![EliminationVideo](/doc_images/ShorterElimination.gif)
-### Capture the Flag
 
-In the Capture the Flag scenes, the players must grab the enemy flag and return it to their base. But they can only score when their own flag is still safe at their base - denoted by a colored ring around the flag. If a player is hit by a ball in this mode, they are stunned in-place for ten seconds, and if they were holding the opponent's flag, they will drop it. Anyone can pick up the dropped flag - if a player picks up their own flag, it is returned to base.
-
-![CTFVideo](/doc_images/ShorterCTF.gif)
+The original dodgeball environment includes the option for capture the flag, but we did not it during the course of this project. All results and scenes take place in the Elimination gamemode. 
 
 ## Training
 
