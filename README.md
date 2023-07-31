@@ -105,8 +105,10 @@ We tested the waypoint movement system against the original continuous version i
 Arena Pics 
 Result Videos 
 
-
+### Small Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3ae4-781f-4ec5-a383-02830fa262b1
+### Small Waypoint
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/956d2396-ec65-4893-8f69-c9fb94bfff3d
 
 
 
