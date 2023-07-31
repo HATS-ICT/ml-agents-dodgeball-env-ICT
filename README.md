@@ -105,6 +105,11 @@ We tested the waypoint movement system against the original continuous version i
 Arena Pics 
 Result Videos 
 
+
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3ae4-781f-4ec5-a383-02830fa262b1
+
+
+
 Additionally, we tested the two systems directly against each other by converting the waypoint-based decisions back into continuous movement with eight possible directions. 
 Movement gif
 Result Videos 
