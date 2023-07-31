@@ -111,6 +111,8 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/956d2396-ec65-4893-8f69-c9fb94bfff3d
 ### Small Continuous with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/186e3624-8afd-4562-a32d-b98450e4fe85
+### Large Continuous
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/04b85e5d-5193-44f4-8f2f-2eff749d0b12
 
 
 
