@@ -21,9 +21,17 @@ Open the root folder in Unity. Then, navigate to `Assets/Dodgeball/Scenes/TitleS
 
 In `Assets/Dodgeball/Scenes/`, in addition to the title screen, eight scenes are provided. They are:
 * `Large_F_Obs.unity`
+  
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Small_Sparse_Arena.png)
 * `Large_F_Obs_Dense.unity`
+
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Small_Dense_Arena.png)
 * `XL_F_Obs.unity`
+
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Large_Sparse_Arena.png)
 * `XL_F_Obs_Dense.unity`
+
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Large_Dense_Arena.png)
 * `Large_WPM_Obs.unity`
 * `Large_WPM_Obs_Dense.unity`
 * `XL_WPM_Obs.unity`
