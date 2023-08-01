@@ -124,7 +124,9 @@ Result Videos
 Data 
 
 ## Verification 
-Small Arena
+In addition to tracking ELO as an indicator of learning, I tested the waypoint-based agents directly against a team of agents that were trained using the original continuous movement. This was accomplished by removing the waypoints and retaining the longer time between decisions and discretized movement. Thus, the waypoint-based team picks one of 8 directions or to stand still and then continuous that course of action for 40 fixed updates. On the other hand, the continuous movement team retains its normal movement and makes decisions every 5 fixed updates. Despite the fact that the waypoint-based team was not trained under these exact conditions, the policies it learned were still able to dominate the continuous movement team. 
+
+### Small Arena
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a5f10e6e-35f0-4085-b903-f1bf20dfb0f9
 
