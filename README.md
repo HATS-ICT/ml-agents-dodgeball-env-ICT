@@ -1,4 +1,4 @@
-# ML-Agents DodgeBall Extended Battle Scenario **In Progress**
+# ML-Agents DodgeBall Extended Battle Scenario --In Progress--
 
 ## Overview
 
