@@ -115,7 +115,7 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/685da
 
 
 ## Trained Policies
-We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. 
+We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. These policies can be found under Assets/DodgeBall/NNModels.
 
 ### Small Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3ae4-781f-4ec5-a383-02830fa262b1
