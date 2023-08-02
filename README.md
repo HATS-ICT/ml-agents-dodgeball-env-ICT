@@ -114,10 +114,8 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/685da
 
 
 
-## Tests 
+## Trained Policies
 We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. 
-Arena Pics 
-Result Videos 
 
 ### Small Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3ae4-781f-4ec5-a383-02830fa262b1
@@ -128,11 +126,6 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/186e3
 ### Large Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/04b85e5d-5193-44f4-8f2f-2eff749d0b12
 
-
-
-Additionally, we tested the two systems directly against each other by converting the waypoint-based decisions back into continuous movement with eight possible directions. 
-Movement gif
-Result Videos 
 
 ## Results 
 Data 
