@@ -20,7 +20,7 @@ public class DodgeBall : MonoBehaviour
     Color m_PrimaryColor;
     public Color FlashColor = Color.white;
 
-    private Vector3 m_ResetPosition;
+    protected Vector3 m_ResetPosition;
 
     private EnvironmentParameters m_ResetParams;
 
@@ -61,7 +61,7 @@ public class DodgeBall : MonoBehaviour
     //Set ball to either a pickup item or an active ball that is in play
     //inPlay = true means the ball can hurt other players
     //ignoreTeam = the TeamID to ignore. *friendly fire mechanic
-    public void BallIsInPlay(bool p, int ignoreTeam = -1)
+    public virtual void BallIsInPlay(bool p, int ignoreTeam = -1)
     {
         if (p)
         {
@@ -76,13 +76,13 @@ public class DodgeBall : MonoBehaviour
         TeamToIgnore = ignoreTeam;
     }
 
-    void TagBallAs(string tag)
+    protected virtual void TagBallAs(string tag)
     {
         gameObject.tag = tag;
         BallCollider.gameObject.tag = tag;
     }
 
-    private void OnCollisionEnter(Collision col)
+    protected virtual void OnCollisionEnter(Collision col)
     {
         //IF NOT MY TEAM
         //PLAYER GOES TO TIMEOUT
