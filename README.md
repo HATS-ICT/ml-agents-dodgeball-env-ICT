@@ -4,7 +4,7 @@
 
 The [ML-Agents](https://github.com/Unity-Technologies/ml-agents) DodgeBall environment is a third-person cooperative shooter where players try to pick up as many balls as they can, then throw them at their opponents. It comprises two game modes: Elimination and Capture the Flag. In Elimination, each group tries to eliminate all members of the other group by hitting them with balls. In Capture the Flag, players try to steal the other team’s flag and bring it back to their base. In both modes, players can hold up to four balls, and dash to dodge incoming balls and go through hedges. You can find more information about the environment at the corresponding [blog post](https://blog.unity.com/technology/ml-agents-plays-dodgeball).
 
-In this project, we used the Elimination game-mode to explore modifying the DodgeBall environment to serve as a proxy for more realistic military simulations. We modified both the dodgeball agents' functionality and the arenas they were tested in to better approximate a high fidelity battle scenario. This document will detail the most significant changes we made and discuss the method we developed for reducing the number of training steps needed to learn an intelligent cooperative policy. 
+In this project, we used the Elimination game-mode to explore modifying the DodgeBall environment to serve as a proxy for high-fidelity military simulations. We modified both the dodgeball agents' functionality and the arenas they were tested on in order to better approximate a real battle scenario. This document will detail the most significant changes we made and discuss the method we developed for reducing the number of training steps needed to learn an intelligent cooperative policy. 
 
 ## Installation and Play
 
@@ -12,14 +12,14 @@ To open this repository, you will need to install the [Unity editor version 2020
 
 Clone the `dodgeball-env` branch of this repository by running:
 ```
-git clone https://github.com/Unity-Technologies/ml-agents-dodgeball-env.git
+git clone https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT
 ```
 
 Open the root folder in Unity. Then, navigate to `Assets/Dodgeball/Scenes/TitleScreen.unity`, open it, and hit the play button to play against pretrained agents. You can also build this scene (along with the `Elimination.unity` and `CaptureTheFlag.unity` scenes) into a game build and play from there.
 
 ## Scenes
 
-In `Assets/Dodgeball/Scenes/`, in addition to the title screen, eight scenes are provided. They are:
+In `Assets/Dodgeball/Scenes/` eight scenes are provided from this project. They are:
 * `Large_F_Obs.unity`
   
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Small_Sparse_Arena.png)
@@ -61,11 +61,11 @@ ML-Agents DodgeBall was built using *ML-Agents Release 18* (Unity package 2.1.0-
 
 To train DodgeBall, in addition to downloading and opening this environment, you will need to [install the ML-Agents Python package](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Installation.md#install-the-mlagents-python-package). Follow the [getting started guide](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Getting-Started.md) for more information on how to use the ML-Agents trainers.
 
-You will need to use either the `CaptureTheFlag_Training.unity` or `Elimination_Training.unity` scenes for training. Since training takes a *long* time, we recommend building these scenes into a Unity build.
+You will need to use either the official Unity scenes or the eight additional scenes provided for training. Since training takes a *long* time, we recommend building these scenes into a Unity build.
 
-A configuration YAML (`DodgeBall.yaml`) for ML-Agents is provided. You can uncomment and increase the number of environments (`num_envs`) depending on your computer's capabilities.
+Two configuration YAML (`DodgeBall.yaml` and `DodgeBall_seperate_policies.yaml`) for ML-Agents is provided. The seperate policies YAML is used to train the two different types of agents; long and short-range. You can uncomment and increase the number of environments (`num_envs`) depending on your computer's capabilities.
 
-After tens of millions of steps (this will take many, many hours!) your agents will start to improve. As with any self-play run, you should observe your [ELO increase over time](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Using-Tensorboard.md#self-play). Check out these videos ([Elimination](https://www.youtube.com/watch?v=Q9cIYfGA1GQ), [Capture the Flag](https://www.youtube.com/watch?v=SyxVayp01S4)) for an example of what kind of behaviors to expect at different stages of training.
+After tens of millions of steps (this will take many, many hours!) your agents will start to improve. As with any self-play run, you should observe your [ELO increase over time](https://github.com/Unity-Technologies/ml-agents/blob/release_18_docs/docs/Using-Tensorboard.md#self-play). Check out these videos ([Elimination](https://www.youtube.com/watch?v=Q9cIYfGA1GQ), [Capture the Flag](https://www.youtube.com/watch?v=SyxVayp01S4)) for an example of what kind of behaviors to expect at different stages of training. In our experiments, we trained agents for 20M steps to get a good understanding of learning capabilities, but this is not nearly enough to reach convergence. Unity trained the original (simpler) models for 160M steps. These extreme training times are the inspiration for this project, as new methods are needed to reduce the computational requirements of reinforcement learning projects. 
 
 ### Environment Parameters
 
@@ -73,15 +73,9 @@ To produce the results in the blog post, we used the default environment as it i
 
 | **Parameter**              | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ball_hold_bonus`| (default = `0.0`) A reward given to an agent at every timestep for each ball it is holding.|
 | `is_capture_the_flag`| Set this parameter to 1 to override the scene's game mode setting, and change it to Capture the Flag. Set to 0 for Elimination.|
 | `time_bonus_scale`| (default = `1.0` for Elimination, and `0.0` for CTF) Multiplier for negative reward given for taking too long to finish the game. Set to 1.0 for a -1.0 reward if it takes the maximum number of steps to finish the match.|
 | `elimination_hit_reward`| (default = `0.1`) In Elimination, a reward given to an agent when it hits an opponent with a ball.|
-| `stun_time` | (default = `10.0`) In Capture the Flag, the number of seconds an agent is stunned for when it is hit by a ball.|
-| `opponent_has_flag_penalty`| (default = `0.0`) In Capture the Flag, a penalty (negative reward) given to the team at every timestep if an opponent has their flag. Use a negative value here. |
-| `team_has_flag_bonus`| (default = `0.0`) In Capture the Flag, a reward given to the team at every timestep if one of the team members has the opponent's flag.|
-| `return_flag_bonus`| (default = `0.0`) In Capture the Flag, a reward given to the team when it returns their own flag to their base, after it has been dropped by an opponent.|
-| `ctf_hit_reward`| (default = `0.02`) In Capture the Flag, a reward given to an agent when it hits an opponent with a ball.|
 
 
 # Extending DodgeBall to Emulate Military Training Scenarios 
@@ -113,8 +107,12 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/e9222
 
 
 ## Waypoint Movement 
-Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core positional strategy. This system limits agents to walking along the waypoints we generate onto the terrain. This allows us to automate shooting and only utilize reinforcement learning for the agents' movement. This allows us to only request a decision from the learned policy at each waypoint which is translated to the direction to travel to the next waypoint. This increases the time between decisions by over 700%. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain.
-Demo Video of agents on waypoints 
+Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core positional strategy. This system limits agents to walking along the waypoints we generate onto the terrain, allowing us to automate shooting and only utilize reinforcement learning for the agents' movement. We only request a decision from the learned policy at each waypoint which is translated to the direction to travel to the next waypoint. This increases the time between decisions by 700%. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain.
+
+
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/685daa70-9410-440a-a83f-79c7f4b3b641
+
+
 
 ## Tests 
 We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. 
