@@ -8,6 +8,8 @@ using TMPro;
 
 public class DodgeBallGameController : MonoBehaviour
 {
+    private static readonly bool IS_DEBUG = false;
+
     //Are we training this platform or is this game/movie mode
     //This determines if win screens and various effects will trigger
     public enum SceneType
@@ -74,17 +76,17 @@ public class DodgeBallGameController : MonoBehaviour
     public AudioClip WinSoundFX2;
     public AudioClip LoseSoundFX1;
     public AudioClip LoseSoundFX2;
-    private AudioSource m_audioSource;
+    protected AudioSource m_audioSource;
 
     [Header("UI")]
     public GameObject BlueTeamWonUI;
     public GameObject PurpleTeamWonUI;
     public TMP_Text CountDownText;
 
-    private int m_NumberOfBluePlayersRemaining = 4; //current number of blue players remaining in elimination mode
-    private int m_NumberOfPurplePlayersRemaining = 4; //current number of purple players remaining in elimination mode
-    private SimpleMultiAgentGroup m_Team0AgentGroup;
-    private SimpleMultiAgentGroup m_Team1AgentGroup;
+    protected int m_NumberOfBluePlayersRemaining = 4; //current number of blue players remaining in elimination mode
+    protected int m_NumberOfPurplePlayersRemaining = 4; //current number of purple players remaining in elimination mode
+    protected SimpleMultiAgentGroup m_Team0AgentGroup;
+    protected SimpleMultiAgentGroup m_Team1AgentGroup;
 
     [Serializable]
     public class PlayerInfo
@@ -103,7 +105,7 @@ public class DodgeBallGameController : MonoBehaviour
         public int TeamID;
     }
 
-    private bool m_Initialized;
+    protected bool m_Initialized;
     public List<PlayerInfo> Team0Players;
     public List<PlayerInfo> Team1Players;
 
@@ -113,17 +115,17 @@ public class DodgeBallGameController : MonoBehaviour
     public GameObject Team1Base;
     public List<DodgeBall> AllBallsList;
 
-    private int m_ResetTimer;
-    private float m_TimeBonus = 1.0f;
-    private float m_ReturnOwnFlagBonus = 0.0f;
-    private List<bool> m_FlagsAtBase = new List<bool>() { true, true };
-    private EnvironmentParameters m_EnvParameters;
-    private StatsRecorder m_StatsRecorder;
-    private int m_NumFlagDrops = 0;
+    protected int m_ResetTimer;
+    protected float m_TimeBonus = 1.0f;
+    protected float m_ReturnOwnFlagBonus = 0.0f;
+    protected List<bool> m_FlagsAtBase = new List<bool>() { true, true };
+    protected EnvironmentParameters m_EnvParameters;
+    protected StatsRecorder m_StatsRecorder;
+    protected int m_NumFlagDrops = 0;
 
     public int MaxEnvironmentSteps = 5000;
 
-    void Start()
+    protected virtual void Start()
     {
         if (ShouldPlayEffects)
         {
@@ -131,7 +133,7 @@ public class DodgeBallGameController : MonoBehaviour
         }
     }
 
-    void Initialize()
+    protected virtual void Initialize()
     {
         m_audioSource = gameObject.AddComponent<AudioSource>();
         m_StatsRecorder = Academy.Instance.StatsRecorder;
@@ -177,8 +179,9 @@ public class DodgeBallGameController : MonoBehaviour
     }
 
     //Instantiate balls and add them to the pool
-    void InstantiateBalls()
+    protected void InstantiateBalls()
     {
+        int ballIndex = 0;
         //SPAWN DODGE BALLS
         foreach (var ballPos in BallSpawnPositions)
         {
@@ -186,6 +189,7 @@ public class DodgeBallGameController : MonoBehaviour
             {
                 var spawnPosition = ballPos.position + Random.insideUnitSphere * BallSpawnRadius;
                 GameObject g = Instantiate(BallPrefab, spawnPosition, Quaternion.identity);
+                g.name += "_" + (ballIndex++) + "!";
                 DodgeBall db = g.GetComponent<DodgeBall>();
                 AllBallsList.Add(db);
                 g.transform.SetParent(transform);
@@ -195,7 +199,7 @@ public class DodgeBallGameController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (!m_Initialized) return;
         
@@ -210,31 +214,34 @@ public class DodgeBallGameController : MonoBehaviour
     }
 
     //Show a countdown UI when the round starts
-    IEnumerator GameCountdown()
+    protected IEnumerator GameCountdown()
     {
         Time.timeScale = 0;
-        if (ShouldPlayEffects)
+        if (ShouldPlayEffects && (CountdownClip != null))
         {
             m_audioSource.PlayOneShot(CountdownClip, .25f);
         }
 
-        CountDownText.text = "3";
-        CountDownText.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1);
-        CountDownText.text = "2";
-        yield return new WaitForSecondsRealtime(1);
-        CountDownText.text = "1";
-        yield return new WaitForSecondsRealtime(1);
-        CountDownText.text = "Go!";
-        yield return new WaitForSecondsRealtime(1);
-        Time.timeScale = 1;
-        CountDownText.gameObject.SetActive(false);
+        if (CountDownText != null)
+        {
+            CountDownText.text = "3";
+            CountDownText.gameObject.SetActive(true);
+            yield return new WaitForSecondsRealtime(1);
+            CountDownText.text = "2";
+            yield return new WaitForSecondsRealtime(1);
+            CountDownText.text = "1";
+            yield return new WaitForSecondsRealtime(1);
+            CountDownText.text = "Go!";
+            yield return new WaitForSecondsRealtime(1);
+            Time.timeScale = 1;
+            CountDownText.gameObject.SetActive(false);
+        }
     }
 
 
     // Get the game mode. Use the set one in the dropdown, unles overwritten by
     // environment parameters.
-    private GameModeType getCurrentGameMode()
+    protected virtual GameModeType getCurrentGameMode()
     {
         float isCTFparam = m_EnvParameters.GetWithDefault("is_capture_the_flag", (float)GameMode);
         GameModeType newGameMode = isCTFparam > 0.5f ? GameModeType.CaptureTheFlag : GameModeType.Elimination;
@@ -243,7 +250,7 @@ public class DodgeBallGameController : MonoBehaviour
 
 
     //Display the correct number of agents on the loser podium
-    void SetActiveLosers(List<GameObject> list, int numOfLosers)
+    protected void SetActiveLosers(List<GameObject> list, int numOfLosers)
     {
         for (int i = 0; i < list.Count; i++)
         {
@@ -267,7 +274,7 @@ public class DodgeBallGameController : MonoBehaviour
     }
 
     // Drop flag if agent is holding enemy flag.
-    private void dropFlagIfHas(DodgeBallAgent hit, DodgeBallAgent thrower)
+    protected void dropFlagIfHas(DodgeBallAgent hit, DodgeBallAgent thrower)
     {
         if (hit.HasEnemyFlag)
         {
@@ -283,7 +290,7 @@ public class DodgeBallGameController : MonoBehaviour
             }
             hit.HasEnemyFlag = false;
             m_NumFlagDrops += 1;
-            Debug.Log($"Team {hit.teamID} Dropped The Flag");
+            if (IS_DEBUG) Debug.Log($"Team {hit.teamID} Dropped The Flag");
         }
     }
 
@@ -301,7 +308,7 @@ public class DodgeBallGameController : MonoBehaviour
                 resetTeam0Flag();
             }
             agent.AddReward(m_ReturnOwnFlagBonus);
-            Debug.Log($"Team {agent.teamID}'s flag was returned to base.");
+            if (IS_DEBUG) Debug.Log($"Team {agent.teamID}'s flag was returned to base.");
         }
     }
 
@@ -321,7 +328,7 @@ public class DodgeBallGameController : MonoBehaviour
 
     //Has this game ended? Used in Game Mode.
     //Prevents multiple coroutine calls when showing the win screen
-    private bool m_GameEnded = false;
+    protected bool m_GameEnded = false;
     public void ShowWinScreen(int winningTeam, float delaySeconds)
     {
         if (m_GameEnded) return;
@@ -353,8 +360,8 @@ public class DodgeBallGameController : MonoBehaviour
         winTextGO.SetActive(true);
         if (ShouldPlayEffects)
         {
-            m_audioSource.PlayOneShot(clipToUse1, .05f);
-            m_audioSource.PlayOneShot(clipToUse2, .05f);
+            if (clipToUse1 != null) m_audioSource.PlayOneShot(clipToUse1, .05f);
+            if (clipToUse2 != null) m_audioSource.PlayOneShot(clipToUse2, .05f);
         }
 
         // Set agents to stun, enable dance animations
@@ -398,7 +405,7 @@ public class DodgeBallGameController : MonoBehaviour
     }
 
     //Clear UI from screen
-    void ResetPlayerUI()
+    protected void ResetPlayerUI()
     {
         if (BlueTeamWonUI)
         {
@@ -441,11 +448,11 @@ public class DodgeBallGameController : MonoBehaviour
     }
 
     //Call this method when a player is hit by a dodgeball
-    public void PlayerWasHit(DodgeBallAgent hit, DodgeBallAgent thrower)
+    public virtual void PlayerWasHit(DodgeBallAgent hit, DodgeBallAgent thrower)
     {
         //SET AGENT/TEAM REWARDS HERE
         int hitTeamID = hit.teamID;
-        int throwTeamID = thrower.teamID;
+        int throwTeamID = thrower?.teamID ?? -1;
         var HitAgentGroup = hitTeamID == 1 ? m_Team1AgentGroup : m_Team0AgentGroup;
         var ThrowAgentGroup = hitTeamID == 1 ? m_Team0AgentGroup : m_Team1AgentGroup;
         float hitBonus = GameMode == GameModeType.Elimination ? EliminationHitBonus : CTFHitBonus;
@@ -532,7 +539,7 @@ public class DodgeBallGameController : MonoBehaviour
                 m_FlagsAtBase[1] = false;
             }
             agent.HasEnemyFlag = true;
-            Debug.Log($"Team {agent.teamID} Stole The Flag");
+            if (IS_DEBUG) Debug.Log($"Team {agent.teamID} Stole The Flag");
         }
     }
 
@@ -544,7 +551,7 @@ public class DodgeBallGameController : MonoBehaviour
         targetTransform.rotation = sourceTransform.rotation;
     }
 
-    private void resetTeam0Flag()
+    protected void resetTeam0Flag()
     {
         Team0Flag.gameObject.SetActive(true);
         Team0Base.gameObject.SetActive(true);
@@ -552,7 +559,7 @@ public class DodgeBallGameController : MonoBehaviour
         m_FlagsAtBase[0] = true;
     }
 
-    private void resetTeam1Flag()
+    protected void resetTeam1Flag()
     {
         Team1Flag.gameObject.SetActive(true);
         Team1Base.gameObject.SetActive(true);
@@ -586,7 +593,7 @@ public class DodgeBallGameController : MonoBehaviour
         }
     }
 
-    private void GetAllParameters()
+    protected virtual void GetAllParameters()
     {
         //Set time bonus to 1 if Elimination, 0 if CTF
         float defaultTimeBonus = GameMode == GameModeType.CaptureTheFlag ? 0.0f : 1.0f;
@@ -596,7 +603,7 @@ public class DodgeBallGameController : MonoBehaviour
         EliminationHitBonus = m_EnvParameters.GetWithDefault("elimination_hit_reward", EliminationHitBonus);
     }
 
-    void ResetScene()
+    protected virtual void ResetScene()
     {
         StopAllCoroutines();
 
