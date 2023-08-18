@@ -1,3 +1,5 @@
+
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/60f3e8fe-e72a-4e4c-8e03-b8e36d229843
 # ML-Agents DodgeBall Extended Battle Scenario --In Progress--
 
 ## Overview
@@ -126,7 +128,7 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/956d2
 ### Small Continuous with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/186e3624-8afd-4562-a32d-b98450e4fe85
 ### Small Waypoint with Dense Obstacles
-
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a35b58a9-b102-499d-a995-93c3fc962896
 ### Large Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/04b85e5d-5193-44f4-8f2f-2eff749d0b12
 ### Large Waypoint
