@@ -132,11 +132,11 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a35b5
 ### Large Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/04b85e5d-5193-44f4-8f2f-2eff749d0b12
 ### Large Waypoint
-
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/2f694291-fb34-4fab-928d-4885d9640a87
 ### Large Continuous with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5c50ed13-315d-4f1f-ab51-067dfea37513
 ### Large Waypoint with Dense Obstacles
-
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/4ad9c17e-230d-4fd4-bb79-50d21b8db8e0
 ## Results 
 Data 
 
