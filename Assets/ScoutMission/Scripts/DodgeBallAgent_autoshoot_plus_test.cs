@@ -17,6 +17,53 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
     public bool discretized = false;
     public int move_input = 0;
 
+    public override void Initialize()
+    {
+        //Time.timeScale = 10f;
+        //SETUP STUNNED AS
+        m_StunnedAudioSource = gameObject.AddComponent<AudioSource>();
+        m_StunnedAudioSource.spatialBlend = 1;
+        m_StunnedAudioSource.maxDistance = 250;
+
+        //SETUP IMPACT AS
+        m_BallImpactAudioSource = gameObject.AddComponent<AudioSource>();
+        m_BallImpactAudioSource.spatialBlend = 1;
+        m_BallImpactAudioSource.maxDistance = 250;
+
+        var bufferSensors = GetComponentsInChildren<BufferSensorComponent>();
+        m_OtherAgentsBuffer = bufferSensors[0];
+
+        m_CubeMovement = GetComponent<AgentCubeMovement>();
+        m_BehaviorParameters = gameObject.GetComponent<BehaviorParameters>();
+
+        AgentRb = GetComponent<Rigidbody>();
+        input = GetComponent<DodgeBallAgentInput>();
+        m_GameController = GetComponentInParent<DodgeBallGameController>();
+
+        //Make sure ThrowController is set up to play sounds
+        ThrowController.PlaySound = m_GameController.ShouldPlayEffects;
+
+        if (m_FirstInitialize)
+        {
+            m_StartingPos = transform.position;
+            m_StartingRot = transform.rotation;
+            //If we don't have a home base, just use the starting position.
+            if (HomeBaseLocation is null)
+            {
+                m_HomeBasePosition = m_StartingPos;
+                m_HomeDirection = transform.forward;
+            }
+            else
+            {
+                m_HomeBasePosition = HomeBaseLocation.position;
+                m_HomeDirection = HomeBaseLocation.forward;
+            }
+            m_FirstInitialize = false;
+            Flag.gameObject.SetActive(false);
+        }
+        m_EnvParameters = Academy.Instance.EnvironmentParameters;
+        GetAllParameters();
+    }
     public override void MoveAgent(ActionBuffers actionBuffers)
     {
         if (Stunned)
@@ -213,27 +260,20 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        //AddReward(m_BallHoldBonus * (float)currentNumberOfBalls);
+        //Add observations
         if (UseVectorObs)
         {
-            sensor.AddObservation(ThrowController.coolDownWait); //Held DBs Normalized
-            //sensor.AddObservation(Stunned);
-            //Array.Clear(ballOneHot, 0, 5);
-            //ballOneHot[currentNumberOfBalls] = 1f;
-            //sensor.AddObservation(ballOneHot); //Held DBs Normalized
+            sensor.AddObservation(ThrowController.coolDownWait); 
             sensor.AddObservation((float)HitPointsRemaining / (float)NumberOfTimesPlayerCanBeHit); //Remaining Hit Points Normalized
-
             sensor.AddObservation(Vector3.Dot(AgentRb.velocity, AgentRb.transform.forward));
             sensor.AddObservation(Vector3.Dot(AgentRb.velocity, AgentRb.transform.right));
             sensor.AddObservation(transform.InverseTransformDirection(m_HomeDirection));
-            //sensor.AddObservation(m_DashCoolDownReady);  // Remaining cooldown, capped at 1
-            // Location to base
-            sensor.AddObservation(GetRelativeCoordinates(m_HomeBasePosition));
-            sensor.AddObservation(this.transform.rotation);
-            //sensor.AddObservation(HasEnemyFlag);
+            sensor.AddObservation(GetRelativeCoordinates(m_HomeBasePosition)); // Location to base (usually spawn point)
+            sensor.AddObservation(this.transform.rotation.y);
         }
         if (IS_DEBUG) Debug.Log("A) CollectObservations=" + sensor.ObservationSize() + "; spec=" + sensor.GetObservationSpec().Shape + "; HP Obs=" + ((float)HitPointsRemaining / (float)NumberOfTimesPlayerCanBeHit) + "; ball One Hot=" + string.Join(",", ballOneHot) + "; relative coords=" + string.Join(",", GetRelativeCoordinates(m_HomeBasePosition)));
 
+        //Fetch team lists
         List<DodgeBallGameController.PlayerInfo> teamList;
         List<DodgeBallGameController.PlayerInfo> opponentsList;
         if (m_BehaviorParameters.TeamId == 0)
@@ -247,19 +287,16 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
             opponentsList = m_GameController.Team0Players;
         }
 
+        //Add teammate's info to observation 
         foreach (var info in teamList)
         {
             if (info.Agent != this && info.Agent.gameObject.activeInHierarchy)
             {
                 m_OtherAgentsBuffer.AppendObservation(GetOtherAgentData(info));
             }
-            if (info.Agent.HasEnemyFlag) // If anyone on my team has the enemy flag
-            {
-                AddReward(m_TeamHasFlagBonus);
-            }
         }
-        //Only opponents who picked up the flag are visible
-        //var currentFlagPosition = TeamFlag.transform.position;
+
+        //Count remaining enemies
         int numEnemiesRemaining = 0;
         bool enemyHasFlag = false;
         foreach (var info in opponentsList)
@@ -267,12 +304,6 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
             if (info.Agent.gameObject.activeInHierarchy)
             {
                 numEnemiesRemaining++;
-            }
-            if (info.Agent.HasEnemyFlag)
-            {
-                enemyHasFlag = true;
-                //currentFlagPosition = info.Agent.transform.position;
-                //AddReward(m_OpponentHasFlagPenalty); // If anyone on the opposing team has a flag
             }
         }
         var portionOfEnemiesRemaining = (float)numEnemiesRemaining / (float)opponentsList.Count;
@@ -307,6 +338,7 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
         else
         {
             this.RequestAction();
+            //Debug.Log("Here");
         }
         // Handle if flag gets home
         if (Vector3.Distance(m_HomeBasePosition, transform.position) <= 3.0f && HasEnemyFlag)
@@ -314,4 +346,140 @@ public class DodgeBallAgent_autoshoot_plus_test : DodgeBallAgent_Scout
             m_GameController.FlagWasBroughtHome(this);
         }
     }
+
+    protected override void OnCollisionEnter(Collision col)
+    {
+        // Ignore all collisions when stunned
+        if (Stunned)
+        {
+            return;
+        }
+        DodgeBall db = col.gameObject.GetComponent<DodgeBall>();
+        if (!db)
+        {
+            if (m_GameController.GameMode == DodgeBallGameController.GameModeType.CaptureTheFlag)
+            {
+                // Check if it is a flag
+                if (col.gameObject.tag == "purpleFlag" && teamID == 0 || col.gameObject.tag == "blueFlag" && teamID == 1)
+                {
+                    m_GameController.FlagWasTaken(this);
+                }
+                else if (col.gameObject.tag == "purpleFlag" && teamID == 1 || col.gameObject.tag == "blueFlag" && teamID == 0)
+                {
+                    m_GameController.ReturnFlag(this);
+                }
+                DodgeBallAgent hitAgent = col.gameObject.GetComponent<DodgeBallAgent>();
+                if (hitAgent && HasEnemyFlag && m_GameController.FlagCarrierKnockback)
+                {
+                    if (hitAgent.teamID != teamID && !hitAgent.Stunned)
+                    {
+                        if (m_GameController.ShouldPlayEffects && (m_GameController.FlagHitClip != null))
+                        {
+                            m_BallImpactAudioSource.PlayOneShot(m_GameController.FlagHitClip, 1f);
+                        }
+                        // Play Flag Whack
+                        if (FlagAnimator != null)
+                        {
+                            FlagAnimator.SetTrigger("FlagSwing");
+                        }
+                        hitAgent.PlayHitFX();
+                        var moveDirection = hitAgent.transform.position - transform.position;
+                        hitAgent.AgentRb.AddForce(moveDirection * 150, ForceMode.Impulse);
+                    }
+                }
+            }
+            return;
+        }
+
+        if (db != null) { if (IS_DEBUG) Debug.Log("A) " + gameObject.name + " hit by " + col.gameObject.name + "; inPlay? " + db.inPlay + "; state=" + ((DodgeBall_Extended)db).ballState); }
+        //if (db.inPlay) //HIT BY LIVE BALL
+        if (((DodgeBall_Extended)db).ballState == DodgeBall_Extended.BallState.THROWABLE)
+        {
+            if (IS_DEBUG) Debug.Log("B) hit by: teamToIgnore=" + db.TeamToIgnore + "; teamID=" + m_BehaviorParameters.TeamId + "; thrownby teamID=" + db?.thrownBy?.teamID);
+            //if (db.TeamToIgnore != -1 && db.TeamToIgnore != m_BehaviorParameters.TeamId) //HIT BY LIVE BALL
+            if ((db?.thrownBy != null) && (db?.thrownBy?.teamID != m_BehaviorParameters.TeamId))
+            {
+                PlayHitFX();
+                m_GameController.PlayerWasHit(this, db.thrownBy);
+                if (IS_DEBUG) Debug.Log("C) " + gameObject + " hit by " + col.gameObject.name + " @ " + Time.realtimeSinceStartup);
+                if (db.gameObject.GetComponent<DodgeBall_Extended>())
+                {
+                    if (db.gameObject.GetComponent<DodgeBall_Extended>().destroyOnImpact)
+                        db.gameObject.GetComponent<DodgeBall_Extended>().RemoveDodgeball();
+                    else
+                        db.BallIsInPlay(false);
+
+                }
+                else
+                {
+                    db.BallIsInPlay(false);
+                }
+            }
+        }
+        else //TRY TO PICK IT UP
+        {
+            if (currentNumberOfBalls < maxAmmoCapacity)
+            {
+                PickUpBall(db);
+            }
+        }
+    }
+
+    public override void ResetAgent()
+    {
+        //base.ResetAgent();
+
+        //Reset Position
+        GetAllParameters();
+        StopAllCoroutines();
+        transform.position = m_StartingPos;
+        AgentRb.constraints = RigidbodyConstraints.FreezeRotation;
+        AgentRb.velocity = Vector3.zero;
+        AgentRb.angularVelocity = Vector3.zero;
+        transform.rotation = m_StartingRot;
+
+        /*//Randomly rotate agent during training
+        if (m_GameController.CurrentSceneType == DodgeBallGameController_WP.SceneType.Game || m_GameController.CurrentSceneType == DodgeBallGameController_WP.SceneType.Movie)
+        {
+            transform.rotation = m_StartingRot;
+        }
+        else //Training Mode 
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        }*/
+
+        //Reset dodgeballs 
+        if (!useInfiniteAmmo)
+            ActiveBallsQueue.Clear();
+        currentNumberOfBalls = 0;
+        if (!useInfiniteAmmo)
+            SetActiveBalls(0);
+
+        //Reset parameters 
+        NormalEyes.gameObject.SetActive(true);
+        HitEyes.gameObject.SetActive(false);
+        HasEnemyFlag = false;
+        Stunned = false;
+        AgentRb.drag = 4;
+        AgentRb.angularDrag = 1;
+        Dancing = false;
+
+        //Setup infinite projectiles
+        if (useInfiniteAmmo)
+        {
+            base.SetActiveBalls(maxAmmoCapacity);
+            PickUpBall(currentlyHeldBalls[0]);
+            currentNumberOfBalls = maxAmmoCapacity;
+        }
+        else
+        {
+            foreach (DodgeBall d in currentlyHeldBalls)
+            {
+                Destroy(d.gameObject);
+            }
+            currentlyHeldBalls.Clear();
+        }
+        SetAmmoCapacity(maxAmmoCapacity);
+    }
+
 }
