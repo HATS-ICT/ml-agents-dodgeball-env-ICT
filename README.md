@@ -8,7 +8,7 @@ In this project, we used the Elimination game-mode to explore modifying the Dodg
 
 ## Installation and Play
 
-To open this repository, you will need to install the [Unity editor version 2020.2.6 or later](https://unity3d.com/get-unity/download).
+To open this repository, you will need to install the [Unity editor version 2020.2.6](https://unity3d.com/get-unity/download).
 
 Clone the `dodgeball-env` branch of this repository by running:
 ```
