@@ -87,8 +87,8 @@ The first change that was needed to convert the original dodgeball scenario into
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/infinite_ammo_video_AdobeExpress.gif))
 
 ## 3D Terrains 
-The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. 
-# Picture
+The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. All the scenarios we tested included hills, which can be distinguished by the areas with different lighting and contour.  
+
 This new setup requires additional raycasts, so that the agents can detect opponents or walls that are not at the same altitude as them. This is crucial for developing intelligent policies when uneven terrain is introduced. 
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Screenshot%20(27).png)
 ## Modified Observation and Action Spaces 
