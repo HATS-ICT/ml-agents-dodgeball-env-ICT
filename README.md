@@ -85,14 +85,17 @@ To produce the results in the blog post, we used the default environment as it i
 ## Infinite Ammunition 
 The first change that was needed to convert the original dodgeball scenario into a military-esque scenario was infinite ammunition. We implemented a system that destroys projectiles on impact and returns them into the possession of the agent. This removes the need to go and recover balls, which distracts from tactical movement and adds an unnecessary layer of complexity for the agents to learn. 
 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/infinite_ammo_video_AdobeExpress.gif))
 
 ## 3D Terrains 
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Screenshot%20(27).png)
 
+
 The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. All the scenarios we tested included hills, which can be distinguished by the areas with different lighting and contour.  
 
 This new setup requires additional raycasts, so that the agents can detect opponents or walls that are not at the same altitude as them. This is crucial for developing intelligent policies when uneven terrain is introduced. 
+
 
 ![Screenshot (26)](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/67abac7c-67e6-4560-b91d-2a39d9e7d5c3)
 
@@ -101,22 +104,29 @@ Some modifications were made to the agents observation and action spaces were ma
 ## Shooting Vertically 
 Another obvious additon to our scenario was the ability to shoot vertically. Opponents should be able to fire at angles other than parallel to the ground so that they can target opponents at various different altitudes. 
 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Autoshoot_vertical_gif_AdobeExpress.gif)
+
 ## Aim-assist 
 We attempted to train some models which were able to choose the angle of their shots, but this drastically increases the complexity of the environment. Our solution was to implement aim-assist, which targets the opponent closest to the shooter's forward direction and automatically fires directly at it. This removes the need for fine tuning aim and encourages learning intelligent positioning and movement over high-precision skills. This method achieved far better results, so it was used in most of our simulations and all the experiments in this repository. 
 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/autoshoot_demo_gif_AdobeExpress.gif)
+
 
 ## Introducing Roles 
 We also investigated the ability to introduce different roles within the same team. We hoped to see whether the agents could learn a more complicated strategy to cooperate and utilize each individuals strengths. This was studied using short and long range units with different capabilities. The short-range units have half the aim-assist range but twice the fire-rate. We found that the agents did in fact learn their role. Short-range units learned more aggressive policies and the long-range units tended to remain in the rear. The long-range units can be distinguished by their darker color. 
 
+
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/e9222e3b-f3ae-4f1b-8e15-41123a8eb155
+
 
 ## Waypoint Movement 
 Due to the large computational requirements of reinforcement learning, we were not able to run our simulations for the same 160 million training steps that the original project did. This fact combined with the increased complexity of our environments led us to develop a method to reduce training time. We developed a waypoint movement system which aims to reduce the complexity of our environments and reduce the frequency of reinforcement learning steps while retaining the core positional strategy. This system limits agents to walking along the waypoints we generate onto the terrain, allowing us to automate shooting and only utilize reinforcement learning for the agents' movement. We only request a decision from the learned policy at each waypoint which is translated to the direction of travel to the next waypoint. This increases the time between decisions by 700% while maintaining and sometimes improving upon tactical performance. We also developed a system to automatically generate these waypoints so the system can be quickly implemented on any unity terrain. The code for waypoint generation is found under Assets/ScoutMission/WaypointGeneration/
 
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/685daa70-9410-440a-a83f-79c7f4b3b641
+
 
 # Trained Policies
 Below is video of the final trained policies for each of the scenarios we created, along with their corresponding ELO scores from self-play. We used ELO score as our metric for learning, but due to the differences between continuous and waypoint scenarios it is not a perfect metric. Our solution was to test the policies for each movement system directly against each other to see which performed better. This requires removing the waypoint restraints and thus creates a disadvantage for agents which were not trained in these conditions. Nevertheless, the waypoint-based agents outcompete the continuous movement agents consistently. They also score achieve higher ELO scores in most scenarios. 
