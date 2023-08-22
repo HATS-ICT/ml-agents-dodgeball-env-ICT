@@ -84,20 +84,27 @@ To produce the results in the blog post, we used the default environment as it i
 
 ## Infinite Ammunition 
 The first change that was needed to convert the original dodgeball scenario into a military-esque scenario was infinite ammunition. We implemented a system that destroys projectiles on impact and returns them into the possession of the agent. This removes the need to go and recover balls, which distracts from tactical movement and adds an unnecessary layer of complexity for the agents to learn. 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/infinite_ammo_video_AdobeExpress.gif))
 
 ## 3D Terrains 
+![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Screenshot%20(27).png)
+
 The next step was developing more realistic terrain. Battle scenarios will seldom occur on flat ground, so we imported data from the Razish Army Training Facility which allowed us to train our agents on a low-fidelity version of real-world training terrain. All the scenarios we tested included hills, which can be distinguished by the areas with different lighting and contour.  
 
 This new setup requires additional raycasts, so that the agents can detect opponents or walls that are not at the same altitude as them. This is crucial for developing intelligent policies when uneven terrain is introduced. 
-![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Screenshot%20(27).png)
+
+![Screenshot (26)](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/67abac7c-67e6-4560-b91d-2a39d9e7d5c3)
+
 ## Modified Observation and Action Spaces 
 Some modifications were made to the agents observation and action spaces were made to better fit our needs. The observation spaces are smaller due to the removal of unnecessary observations that only apply to the Capture the Flag gamemode. Additionally, the dash action was removed as it was a bit awkward in our scenario, especially when moving along waypoints. 
 ## Shooting Vertically 
 Another obvious additon to our scenario was the ability to shoot vertically. Opponents should be able to fire at angles other than parallel to the ground so that they can target opponents at various different altitudes. 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Autoshoot_vertical_gif_AdobeExpress.gif)
 ## Aim-assist 
 We attempted to train some models which were able to choose the angle of their shots, but this drastically increases the complexity of the environment. Our solution was to implement aim-assist, which targets the opponent closest to the shooter's forward direction and automatically fires directly at it. This removes the need for fine tuning aim and encourages learning intelligent positioning and movement over high-precision skills. This method achieved far better results, so it was used in most of our simulations and all the experiments in this repository. 
+
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/autoshoot_demo_gif_AdobeExpress.gif)
 
 ## Introducing Roles 
@@ -111,30 +118,68 @@ Due to the large computational requirements of reinforcement learning, we were n
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/685daa70-9410-440a-a83f-79c7f4b3b641
 
-## Trained Policies
-We tested the waypoint movement system against the original continuous version in four different scenarios, including two sizes and two obstacle densities. These policies can be found under Assets/DodgeBall/NNModels. 
+# Trained Policies
+Below is video of the final trained policies for each of the scenarios we created, along with their corresponding ELO scores from self-play. We used ELO score as our metric for learning, but due to the differences between continuous and waypoint scenarios it is not a perfect metric. Our solution was to test the policies for each movement system directly against each other to see which performed better. This requires removing the waypoint restraints and thus creates a disadvantage for agents which were not trained in these conditions. Nevertheless, the waypoint-based agents outcompete the continuous movement agents consistently. They also score achieve higher ELO scores in most scenarios. 
 
 Note: Some of the videos had to be cropped to meet GitHub's file size limitations.
 
 ### Small Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/d7ea3ae4-781f-4ec5-a383-02830fa262b1
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/796b1819-0587-43fc-8ab9-11c33118b2b3" width="500" height="500">
+
 ### Small Waypoint
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/956d2396-ec65-4893-8f69-c9fb94bfff3d
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/636bba0a-55a0-42d7-9f58-3b32e3f52ea7" width="500" height="500">
+
 ### Small Continuous with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/186e3624-8afd-4562-a32d-b98450e4fe85
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5547c0fe-061f-41ab-bd8a-8e9a09699614" width="500" height="500">
+
 ### Small Waypoint with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a35b58a9-b102-499d-a995-93c3fc962896
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/7c9c5fec-07e5-4477-a1cb-09cdde1117d5" width="500" height="500">
+
 ### Large Continuous
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/04b85e5d-5193-44f4-8f2f-2eff749d0b12
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/9c1c6ebe-d348-4734-bcc3-d5b9a69d950c" width="500" height="500">
+
 ### Large Waypoint
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/2f694291-fb34-4fab-928d-4885d9640a87
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/93cbc25c-0fa0-4a10-a66d-460409ee980c" width="500" height="500">
+
 ### Large Continuous with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5c50ed13-315d-4f1f-ab51-067dfea37513
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/daeb57da-80de-486c-8b29-d6af6482048c" width="500" height="500">
+
 ### Large Waypoint with Dense Obstacles
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/4ad9c17e-230d-4fd4-bb79-50d21b8db8e0
 
-## Results 
-Data 
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/dedc466e-c53f-4b78-8cf5-11528a1f1a4b" width="500" height="500">
+
+## Continuous VS. Waypoint ELO Scores 
+
+### Small Arena 
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/3b8b248f-03e4-4d0a-b0af-211b7db2b240" width="500" height="500">
+
+### Small Arena with Dense Obstacles
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/4b6138c9-cfd0-479e-b2df-1927eac2ce97" width="500" height="500">
+
+### Large Arena 
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5a1878aa-fba0-459d-835e-d077ac9994f4" width="500" height="500">
+
+### Large Arena with Dense Obstacles
+
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/4cb73dea-3a5e-43f3-8896-b985e1d8e521" width="500" height="500">
 
 ## Verification 
 In addition to tracking ELO as an indicator of learning, we tested the waypoint-based agents directly against a team of agents that were trained using the original continuous movement. This was accomplished by removing the waypoints and retaining the longer time between decisions and discretized movement. In other words, the waypoint-based team picks one of 8 directions or to stand still and then continuous that course of action for 40 fixed updates. On the other hand, the continuous movement team retains its normal movement and makes decisions every 5 fixed updates. Despite the fact that the continuous movement team having home court advantage, the policies learned by our waypoint movement method were able to consistently outperform the continuous movement team. 
