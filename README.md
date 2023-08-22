@@ -200,11 +200,11 @@ Each scenario was ran 100 times with scores and video provided below.
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a5f10e6e-35f0-4085-b903-f1bf20dfb0f9
 
-<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/42e11487-9470-4a64-81e7-bb27e23b5079" width="600" height="400">
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/6ebf5141-8d44-4984-86f2-99bc480635ae" width="600" height="350">
 
 ### Small Arena with Dense Obstacles
 
 
-<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/f52f9426-efca-4906-822b-7c9377eb2be6" width="600" height="400">
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a494b5cd-4559-4585-abad-0a20184f6895" width="600" height="350">
 
 
