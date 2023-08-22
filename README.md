@@ -204,6 +204,7 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a5f10
 
 ### Small Arena with Dense Obstacles
 
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/cf9e279c-b86e-459c-8049-ee1b9ba29b68
 
 <img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/a494b5cd-4559-4585-abad-0a20184f6895" width="600" height="350">
 
