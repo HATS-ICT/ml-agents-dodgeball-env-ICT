@@ -212,10 +212,11 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/cf9e2
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/6636e9d4-027e-488c-be2f-c7a570ab034c
 
-Graph
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/9c2c7a5e-34c9-419d-844b-92148128c8a5" width="600" height="350">
 
 ### Large Arena with Dense Obstacles
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/23629cf6-2931-477f-8f4c-3d03a910de43
 
-Graph
+<img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5bca9b11-10b4-4d45-ae33-8a5e1256d680" width="600" height="350">
+
