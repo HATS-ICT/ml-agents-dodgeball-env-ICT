@@ -1,6 +1,6 @@
 
 https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/60f3e8fe-e72a-4e4c-8e03-b8e36d229843
-# ML-Agents DodgeBall Extended Battle Scenario --In Progress--
+# ML-Agents DodgeBall Extended Battle Scenario 
 
 ## Overview
 
