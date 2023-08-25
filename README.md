@@ -216,6 +216,6 @@ Graph
 
 ### Large Arena with Dense Obstacles
 
-Video
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/23629cf6-2931-477f-8f4c-3d03a910de43
 
 Graph
