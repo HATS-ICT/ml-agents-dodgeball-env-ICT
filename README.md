@@ -47,7 +47,7 @@ In `Assets/Dodgeball/Scenes/` eight scenes are provided from this project. They 
 
 ![](https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/blob/develop/Media/Large_Dense_WP_image.png)
 
-Where Obs differentiates between the scenarios which include the modified observation space and those that do not. WPM stands for waypoint manual, which was the final iteration of our waypoint movement system and will be discussed in the Waypoint Movement section of this document.  Large and XL refers to the two different sizes of arena in which we tested our waypoint movement system against the original continuous implementation. 
+Obs differentiates between the scenarios which include the modified observation space and those that do not. WPM stands for waypoint manual, which was the final iteration of our waypoint movement system and will be discussed in the Waypoint Movement section of this document.  Large and XL refers to the two different sizes of arena in which we tested our waypoint movement system against the original continuous implementation. 
 
 ### Elimination
 
