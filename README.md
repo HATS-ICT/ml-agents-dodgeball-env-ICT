@@ -210,7 +210,7 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/cf9e2
 
 ### Large Arena
 
-Video
+https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/6636e9d4-027e-488c-be2f-c7a570ab034c
 
 Graph
 
