@@ -220,3 +220,7 @@ https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/23629
 
 <img src="https://github.com/calebkoresh/ml-agents-dodgeball-env-ICT/assets/80787784/5bca9b11-10b4-4d45-ae33-8a5e1256d680" width="600" height="350">
 
+## Conclusion
+Automatically generating waypoints is an efficient way to discretize the state space in military training scenarios so that reinforcement learning agents can learn intelligent policies more efficiently. Our results show that agents trained on a waypoint system can transfer their knowledge back into a continuous space and outperform agents who were not trained using waypoints. 
+
+In general, it seems most effective to use reinforcement learning to decide higher level behavior and strategy while hard-coding fine skills like aiming a projectile. Furthermore, state spaces should be discretized whenever possible to increase learning speed. 
